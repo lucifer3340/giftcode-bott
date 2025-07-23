@@ -39,12 +39,21 @@ giftcodes = {
 def send_welcome(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     markup.add('TASHAN WIN', 'SIKKIM GAME')
+    markup.add('Contact Us')  # 👈 Yeh naya button add kiya
     bot.send_message(
         message.chat.id,
-        "🎉 *Welcome!* Please select a platform:",
+        "🎉 *Welcome!* Please select a platform or Contact Us:",
         parse_mode='Markdown',
         reply_markup=markup
     )
+@bot.message_handler(func=lambda message: message.text == 'Contact Us')
+def contact_us(message):
+    bot.send_message(
+        message.chat.id,
+        "📞 *Contact Us*\n\nFor any help, contact us at: @amansonu365",
+        parse_mode='Markdown'
+    )
+
 
 @bot.message_handler(func=lambda message: message.text in ['TASHAN WIN', 'SIKKIM GAME'])
 def select_amount(message):
