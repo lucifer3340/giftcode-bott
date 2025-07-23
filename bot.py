@@ -77,7 +77,7 @@ def send_code(message, platform):
     if code:
         bot.send_message(
             message.chat.id,
-            f"🎁 *Your Giftcode:* `{code}`\n🔗 *Platform Link:* [Click Here]({link})",
+            f"🎁 *Your Giftcode:✔️* `{code}`\n🔗 *Platform Link:* [Click Here]({link})",
             parse_mode='Markdown',
             disable_web_page_preview=True
         )
