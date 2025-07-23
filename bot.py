@@ -37,12 +37,11 @@ giftcodes = {
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    # ✅ Step 1: Pehle image bhejo
-    bot.send_photo(chat_id, photo=open('https://raw.githubusercontent.com/lucifer3340/giftcode-bott/main/images/banner.jpg
-', 'rb'))
+    bot.send_photo(
+        message.chat.id,
+        photo='https://raw.githubusercontent.com/lucifer3340/giftcode-bott/main/images/banner.jpg'
+    )
 
-
-    # ✅ Step 2: Fir greeting + buttons bhejo
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     markup.add('TASHAN WIN', 'SIKKIM GAME')
     markup.add('Contact Us')
@@ -52,6 +51,7 @@ def send_welcome(message):
         parse_mode='Markdown',
         reply_markup=markup
     )
+
 
 @bot.message_handler(func=lambda message: message.text == 'Contact Us')
 def contact_us(message):
