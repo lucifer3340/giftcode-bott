@@ -35,8 +35,23 @@ giftcodes = {
     }
 }
 
+# ✅ /start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    user_id = str(message.from_user.id)
+
+    # ✅ Check aur save karo
+    if not os.path.exists("users.txt"):
+        open("users.txt", "w").close()
+
+    with open("users.txt", "r") as f:
+        users = f.read().splitlines()
+
+    if user_id not in users:
+        with open("users.txt", "a") as f:
+            f.write(user_id + "\n")
+
+    # ✅ Banner + buttons
     bot.send_photo(
         message.chat.id,
         photo='https://raw.githubusercontent.com/lucifer3340/giftcode-bott/main/images/banner.jpg'
@@ -45,6 +60,7 @@ def send_welcome(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     markup.add('TASHAN WIN', 'SIKKIM GAME')
     markup.add('Contact Us')
+    markup.add('/stats')
     bot.send_message(
         message.chat.id,
         "🎉 *Welcome!* Please select a platform or Contact Us:",
@@ -52,7 +68,7 @@ def send_welcome(message):
         reply_markup=markup
     )
 
-
+# ✅ Contact Us
 @bot.message_handler(func=lambda message: message.text == 'Contact Us')
 def contact_us(message):
     bot.send_message(
@@ -61,7 +77,7 @@ def contact_us(message):
         parse_mode='Markdown'
     )
 
-
+# ✅ Platform selection
 @bot.message_handler(func=lambda message: message.text in ['TASHAN WIN', 'SIKKIM GAME'])
 def select_amount(message):
     platform = message.text
@@ -75,7 +91,7 @@ def select_amount(message):
     )
     bot.register_next_step_handler(message, send_code, platform)
 
-# ✅ Amount selection + code + link + attention message
+# ✅ Amount selection + code + link + attention
 def send_code(message, platform):
     amount = message.text
     codes = giftcodes.get(platform, {}).get('codes', {})
@@ -87,13 +103,23 @@ def send_code(message, platform):
             message.chat.id,
             f"🎁 *Your Giftcode:* `{code}`\n"
             f"🔗 *Platform Link:* [Click Here]({link})\n\n"
-            f"⚠️ *Attention:* Giftcode claim karne ke liye upar *Click Here* pe click karo aur ID bana lo. Phir giftcode easily claim ho jayega!"
-            ,
+            f"⚠️ *Attention:* Giftcode claim karne ke liye upar *Click Here* pe click karo aur ID bana lo. Phir giftcode easily claim ho jayega!",
             parse_mode='Markdown',
             disable_web_page_preview=True
         )
     else:
         bot.send_message(message.chat.id, "❌ Code not found. Please try again.")
+
+# ✅ Users stats
+@bot.message_handler(commands=['stats'])
+def send_stats(message):
+    if os.path.exists("users.txt"):
+        with open("users.txt", "r") as f:
+            users = f.read().splitlines()
+        total_users = len(set(users))
+        bot.send_message(message.chat.id, f"📊 *Total unique users:* {total_users}", parse_mode='Markdown')
+    else:
+        bot.send_message(message.chat.id, "📊 No users yet.")
 
 print("🤖 Bot is running...")
 bot.infinity_polling()
