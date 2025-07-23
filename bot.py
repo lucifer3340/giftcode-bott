@@ -37,15 +37,22 @@ giftcodes = {
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    # ✅ Step 1: Pehle image bhejo
+    bot.send_photo(chat_id, photo=open('https://raw.githubusercontent.com/lucifer3340/giftcode-bott/main/images/banner.jpg
+', 'rb'))
+
+
+    # ✅ Step 2: Fir greeting + buttons bhejo
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     markup.add('TASHAN WIN', 'SIKKIM GAME')
-    markup.add('Contact Us')  # 👈 Yeh naya button add kiya
+    markup.add('Contact Us')
     bot.send_message(
         message.chat.id,
         "🎉 *Welcome!* Please select a platform or Contact Us:",
         parse_mode='Markdown',
         reply_markup=markup
     )
+
 @bot.message_handler(func=lambda message: message.text == 'Contact Us')
 def contact_us(message):
     bot.send_message(
@@ -68,6 +75,7 @@ def select_amount(message):
     )
     bot.register_next_step_handler(message, send_code, platform)
 
+# ✅ Amount selection + code + link + attention message
 def send_code(message, platform):
     amount = message.text
     codes = giftcodes.get(platform, {}).get('codes', {})
@@ -77,7 +85,10 @@ def send_code(message, platform):
     if code:
         bot.send_message(
             message.chat.id,
-            f"🎁 *Your Giftcode:✔️* `{code}`\n🔗 *Platform Link:* [Click Here]({link})",
+            f"🎁 *Your Giftcode:* `{code}`\n"
+            f"🔗 *Platform Link:* [Click Here]({link})\n\n"
+            f"⚠️ *Attention:* Giftcode claim karne ke liye upar *Click Here* pe click karo aur ID bana lo. Phir giftcode easily claim ho jayega!"
+            ,
             parse_mode='Markdown',
             disable_web_page_preview=True
         )
